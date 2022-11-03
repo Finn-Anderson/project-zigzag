@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.uhi.mad.zigzag.Home"
+        android:label="Home"
+        tools:layout="@layout/home">
+
+        <action
+            android:id="@+id/action_Home_to_Game"
+            app:destination="@id/game" />
+        <action
+            android:id="@+id/action_Home_to_Leaderboard"
+            app:destination="@id/leaderboard" />
+    </fragment>
+    <fragment
+        android:id="@+id/game"
+        android:name="com.uhi.mad.zigzag.Game"
+        android:label="Game"
+        tools:layout="@layout/game">
+
+        <action
+            android:id="@+id/action_Game_to_Over"
+            app:destination="@id/game_over" />
+    </fragment>
+    <fragment
+        android:id="@+id/leaderboard"
+        android:name="com.uhi.mad.zigzag.Leaderboard"
+        android:label="Leaderboard"
+        tools:layout="@layout/leaderboard">
+
+        <action
+            android:id="@+id/action_Leaderboard_to_Game"
+            app:destination="@id/game" />
+    </fragment>
+    <fragment
+        android:id="@+id/game_over"
+        android:name="com.uhi.mad.zigzag.Game_Over"
+        android:label="Game Over"
+        tools:layout="@layout/game_over">
+
+        <action
+            android:id="@+id/action_Over_to_Game"
+            app:destination="@id/game" />
+        <action
+            android:id="@+id/action_Over_to_Leaderboard"
+            app:destination="@id/leaderboard" />
+    </fragment>
+</navigation>
