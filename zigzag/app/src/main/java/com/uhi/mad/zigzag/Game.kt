@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.uhi.mad.zigzag.databinding.GameBinding
 
@@ -14,6 +15,7 @@ import com.uhi.mad.zigzag.databinding.GameBinding
 class Game : Fragment() {
 
     private var _binding: GameBinding? = null
+    val scoreModel: ScoreViewModel by activityViewModels()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -33,6 +35,7 @@ class Game : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSecond.setOnClickListener {
+            scoreModel.setScore("3")
             findNavController().navigate(R.id.action_Game_to_Over)
         }
     }

@@ -12,4 +12,9 @@
     <string name="header">ZigZag</string>
     <string name="play">Play</string>
     <string name="leaderboard">Leaderboard</string>
+    <string name="game_over">Game Over</string>
+    <string name="score">Score</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="submit_score">Submit Score</string>
+    <string name="game_info_text">Drag circle to start the game. Avoid the brown rectangles.</string>
 </resources>
