@@ -18,6 +18,8 @@ class Leaderboard : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    var scoreDatabase: DatabaseHelper? = null
+    private var scores = ArrayList<Array<String>>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,6 +27,13 @@ class Leaderboard : Fragment() {
     ): View {
 
         _binding = LeaderboardBinding.inflate(inflater, container, false)
+
+        scoreDatabase = DatabaseHelper(requireContext())
+        scoreDatabase!!.open()
+        scores = scoreDatabase!!.getScores()
+
+        TableAdapter().createRows(binding.leaderboardTable, scores, requireContext())
+
         return binding.root
     }
 

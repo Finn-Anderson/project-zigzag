@@ -1,5 +1,6 @@
 package com.uhi.mad.zigzag
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,12 +17,13 @@ class Game_Over : Fragment() {
 
     private var _binding: GameOverBinding? = null
 
-    val scoreModel: ScoreViewModel by activityViewModels()
-    val nameModel: UsernameViewModel by activityViewModels()
+    private val scoreModel: ScoreViewModel by activityViewModels()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    var scoreDatabase: DatabaseHelper? = null
+    private var scores = ArrayList<Array<String>>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,14 +37,35 @@ class Game_Over : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val score = scoreModel.getScore()
-        binding.scoreTxt.text = score
+        val scoreTxt = scoreModel.getScore().toString()
+        binding.scoreTxt.text = scoreTxt
 
-        GameOverController.storeDeviceHighscore(score, requireContext().filesDir)
+        GameOverController.storeDeviceHighscore(scoreTxt, requireContext().filesDir)
 
         binding.submitBtn.setOnClickListener {
-            nameModel.setName(binding.usernameInput.text.toString())
-            findNavController().navigate(R.id.action_Over_to_Leaderboard)
+            val username = binding.usernameInput.text.toString()
+            val score = scoreModel.getScore()
+
+            if (score != null) {
+                if (username.isNotEmpty() && score > 0) {
+
+                    scoreDatabase = DatabaseHelper(requireContext())
+                    scoreDatabase!!.open()
+                    scores = scoreDatabase!!.getUser(username)
+
+                    if (scores.size > 0) {
+                        scoreDatabase!!.updateScore(username, score, "United Kingdom")
+                    } else {
+                        scoreDatabase!!.insertScore(username, score, "United Kingdom")
+                    }
+
+                    findNavController().navigate(R.id.action_Over_to_Leaderboard)
+                } else {
+                    alert("Invalid username entered")
+                }
+            } else {
+                alert("Score is too low to submit")
+            }
         }
 
         binding.playAgainBtn.setOnClickListener {
@@ -57,5 +80,18 @@ class Game_Over : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun alert(message: String){
+        val alert = AlertDialog.Builder(requireContext())
+
+        alert.setTitle("Error")
+        alert.setMessage(message)
+        alert.setCancelable(false)
+        alert.setNegativeButton("Ok") { dialog, _ ->
+            dialog.cancel()
+        }
+        alert.create()
+        alert.show()
     }
 }

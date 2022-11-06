@@ -35,7 +35,7 @@ class Game : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSecond.setOnClickListener {
-            scoreModel.setScore("3")
+            scoreModel.setScore(3)
             findNavController().navigate(R.id.action_Game_to_Over)
         }
     }

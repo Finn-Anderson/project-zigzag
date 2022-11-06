@@ -2,12 +2,6 @@ package com.uhi.mad.zigzag
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
 import com.uhi.mad.zigzag.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

@@ -4,13 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class ScoreViewModel: ViewModel() {
-    private val score = MutableLiveData<String>()
+    private val score = MutableLiveData<Int>()
 
-    fun setScore(score: String) {
+    fun setScore(score: Int) {
         this.score.value = score
     }
 
-    fun getScore(): String? {
+    fun getScore(): Int? {
         return score.value
     }
 }
