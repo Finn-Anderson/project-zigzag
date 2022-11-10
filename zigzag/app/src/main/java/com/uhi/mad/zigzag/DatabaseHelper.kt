@@ -41,14 +41,14 @@ class DatabaseHelper (ctx: Context) {
         args.put("score", score)
         args.put("country", country)
 
-        mDb?.update(TableName, args, "username = $username", null)
+        mDb?.update(TableName, args, "username = '$username'", null)
     }
 
     @Throws(SQLException::class)
-    fun getUser(name: String): ArrayList<Array<String>> {
+    fun getUser(username: String): ArrayList<Array<String>> {
         val results = ArrayList<Array<String>>()
 
-        val cursor = mDb?.query(TableName, arrayOf("username", "score", "country"), "username = '$name'", null, null, null, null)
+        val cursor = mDb?.query(TableName, arrayOf("username", "score", "country"), "username = '$username'", null, null, null, null)
 
         if (cursor!!.moveToFirst()) {
             results.add(arrayOf(cursor.getString(0), cursor.getString(1), cursor.getString(2)))
@@ -64,7 +64,9 @@ class DatabaseHelper (ctx: Context) {
         val cursor = mDb?.query(TableName, arrayOf("username", "score", "country"), null, null, null, null, "score desc")
 
         if (cursor!!.moveToFirst()) {
-            results.add(arrayOf(cursor.getString(0), cursor.getString(1), cursor.getString(2)))
+            do {
+                results.add(arrayOf(cursor.getString(0), cursor.getString(1), cursor.getString(2)))
+            } while (cursor.moveToNext())
         }
         cursor.close()
         return results

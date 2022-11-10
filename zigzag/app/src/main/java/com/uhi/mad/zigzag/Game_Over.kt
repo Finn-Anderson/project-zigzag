@@ -2,10 +2,10 @@ package com.uhi.mad.zigzag
 
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.uhi.mad.zigzag.databinding.GameOverBinding
@@ -22,7 +22,8 @@ class Game_Over : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    var scoreDatabase: DatabaseHelper? = null
+
+    private var scoreDatabase: DatabaseHelper? = null
     private var scores = ArrayList<Array<String>>()
 
     override fun onCreateView(
@@ -53,13 +54,15 @@ class Game_Over : Fragment() {
                     scoreDatabase!!.open()
                     scores = scoreDatabase!!.getUser(username)
 
-                    if (scores.size > 0) {
-                        scoreDatabase!!.updateScore(username, score, "United Kingdom")
-                    } else {
-                        scoreDatabase!!.insertScore(username, score, "United Kingdom")
-                    }
+                    LocationGrabber().getLocation(requireContext(), requireActivity()) { country ->
+                        if (scores.size > 0) {
+                            scoreDatabase!!.updateScore(username, score, country)
+                        } else {
+                            scoreDatabase!!.insertScore(username, score, country)
+                        }
 
-                    findNavController().navigate(R.id.action_Over_to_Leaderboard)
+                        findNavController().navigate(R.id.action_Over_to_Leaderboard)
+                    }
                 } else {
                     alert("Invalid username entered")
                 }
@@ -82,7 +85,7 @@ class Game_Over : Fragment() {
         _binding = null
     }
 
-    fun alert(message: String){
+    private fun alert(message: String){
         val alert = AlertDialog.Builder(requireContext())
 
         alert.setTitle("Error")

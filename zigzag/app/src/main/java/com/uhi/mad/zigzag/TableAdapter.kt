@@ -1,6 +1,7 @@
 package com.uhi.mad.zigzag
 
 import android.content.Context
+import android.graphics.Color
 import android.view.Gravity
 import android.widget.TableLayout
 import android.widget.TableRow
@@ -18,18 +19,21 @@ class TableAdapter {
             name.gravity = Gravity.CENTER
             name.text = position[0]
             name.textSize = 16F
+            name.setTextColor(Color.parseColor("#FFFFFF"))
 
             val score = TextView(ctx)
             score.layoutParams = TableRow.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f)
             score.gravity = Gravity.CENTER
             score.text = position[1]
-            name.textSize = 16F
+            score.textSize = 16F
+            score.setTextColor(Color.parseColor("#FFFFFF"))
 
             val country = TextView(ctx)
             country.layoutParams = TableRow.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f)
             country.gravity = Gravity.CENTER
             country.text = position[2]
-            name.textSize = 16F
+            country.textSize = 16F
+            country.setTextColor(Color.parseColor("#FFFFFF"))
 
             row.addView(name)
             row.addView(score)

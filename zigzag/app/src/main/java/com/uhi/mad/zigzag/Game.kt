@@ -1,12 +1,14 @@
 package com.uhi.mad.zigzag
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import com.uhi.mad.zigzag.databinding.GameBinding
 
 /**
@@ -31,12 +33,50 @@ class Game : Fragment() {
 
     }
 
+    private var x: Float = 0.0f
+    private var y: Float = 0.0f
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonSecond.setOnClickListener {
-            scoreModel.setScore(3)
-            findNavController().navigate(R.id.action_Game_to_Over)
+        requireActivity().onBackPressedDispatcher.addCallback { }
+
+        //binding.buttonGame.setOnClickListener {
+            //scoreModel.setScore(3)
+            //findNavController().navigate(R.id.action_Game_to_Over)
+        //}
+
+        binding.buttonGame.setOnTouchListener { v, event ->
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    x = v.x - event.rawX
+                    y = v.y - event.rawY
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    v.x = (event.rawX + x)
+                    v.y = (event.rawY + y)
+
+                    val screenW = resources.displayMetrics.widthPixels
+                    val screenY = resources.displayMetrics.heightPixels
+
+                    if (v.x < 0.0f) {
+                        v.x = 0.0f
+                    }
+                    if (v.x > (screenW - v.width)) {
+                        v.x = (screenW - v.width).toFloat()
+                    }
+                    if (v.y < 0.0f) {
+                        v.y = 0.0f
+                    }
+                    if (v.y > (screenY - v.height - 66.0f)) {
+                        v.y = (screenY - v.height - 66.0f)
+                    }
+                }
+                MotionEvent.ACTION_UP -> {
+                    v.performClick()
+                }
+            }
+            v?.onTouchEvent(event) ?: true
         }
     }
 
