@@ -61,7 +61,7 @@ class DatabaseHelper (ctx: Context) {
     fun getScores(): ArrayList<Array<String>> {
         val results = ArrayList<Array<String>>()
 
-        val cursor = mDb?.query(TableName, arrayOf("username", "score", "country"), null, null, null, null, "score desc")
+        val cursor = mDb?.query(TableName, arrayOf("username", "score", "country"), null, null, null, null, "score desc", "100")
 
         if (cursor!!.moveToFirst()) {
             do {
