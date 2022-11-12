@@ -12,6 +12,7 @@ import androidx.activity.addCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import com.uhi.mad.zigzag.databinding.GameBinding
+import androidx.navigation.fragment.findNavController
 import java.util.*
 
 /**
@@ -46,15 +47,21 @@ class Game : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback { }
 
-        //binding.buttonGame.setOnClickListener {
-            //scoreModel.setScore(3)
-            //findNavController().navigate(R.id.action_Game_to_Over)
-        //}
-
         val gameLayout: ConstraintLayout = view.findViewById(R.id.gameLayout)
 
         val screenW = resources.displayMetrics.widthPixels
         val screenY = resources.displayMetrics.heightPixels
+
+        var time: Long = 3000
+        var yPos = 0.0f
+
+        gameLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            _binding?.let {
+                val location = IntArray(2)
+                it.buttonGame.getLocationOnScreen(location)
+                yPos = (location[1].toFloat())
+            }
+        }
 
         binding.buttonGame.setOnTouchListener { v, event ->
             when (event?.action) {
@@ -67,7 +74,10 @@ class Game : Fragment() {
                         handler.postDelayed(object: Runnable {
                             override fun run() {
                                 createObstacle(requireContext(), gameLayout, resources, resources.displayMetrics)
-                                handler.postDelayed(this, 3000)
+                                handler.postDelayed(this, time)
+                                if (time > 1500) {
+                                    time -= 50
+                                }
                             }
                         }, 0)
 
@@ -92,6 +102,8 @@ class Game : Fragment() {
                     if (v.y > (screenY - v.height - 66.0f)) {
                         v.y = (screenY - v.height - 66.0f)
                     }
+
+                    yPos = v.y
                 }
                 MotionEvent.ACTION_UP -> {
                     v.performClick()
@@ -99,6 +111,19 @@ class Game : Fragment() {
             }
             v?.onTouchEvent(event) ?: true
         }
+
+        val handler = Handler(requireContext().mainLooper)
+        handler.postDelayed(object: Runnable {
+            override fun run() {
+                checkGainPoints(view, yPos, scoreModel)
+                val state = onCollision(binding.buttonGame, gameLayout)
+                if (state) {
+                    findNavController().navigate(R.id.action_Game_to_Over)
+                } else {
+                    handler.postDelayed(this, 1000/60)
+                }
+            }
+        }, 0)
     }
 
     override fun onDestroyView() {
