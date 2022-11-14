@@ -41,27 +41,34 @@ class Game_Over : Fragment() {
         val scoreTxt = scoreModel.getScore().toString()
         binding.scoreTxt.text = scoreTxt
 
-        GameOverController.storeDeviceHighscore(scoreTxt, requireContext().filesDir)
+        GameOverController.storeDeviceHighscore(scoreTxt, activity, requireContext().filesDir)
 
         binding.submitBtn.setOnClickListener {
             val username = binding.usernameInput.text.toString()
             val score = scoreModel.getScore()
 
             if (score != null) {
-                if (username.isNotEmpty() && score > 0) {
+                if (username.isNotEmpty()) {
 
                     scoreDatabase = DatabaseHelper(requireContext())
                     scoreDatabase!!.open()
                     scores = scoreDatabase!!.getUser(username)
 
                     LocationGrabber().getLocation(requireContext(), requireActivity()) { country ->
+
                         if (scores.size > 0) {
-                            scoreDatabase!!.updateScore(username, score, country)
+                            if (score > scores[0][1].toInt()) {
+                                scoreDatabase!!.updateScore(username, score, country)
+
+                                findNavController().navigate(R.id.action_Over_to_Leaderboard)
+                            } else {
+                                alert("Someone has entered a higher score with this username")
+                            }
                         } else {
                             scoreDatabase!!.insertScore(username, score, country)
-                        }
 
-                        findNavController().navigate(R.id.action_Over_to_Leaderboard)
+                            findNavController().navigate(R.id.action_Over_to_Leaderboard)
+                        }
                     }
                 } else {
                     alert("Invalid username entered")

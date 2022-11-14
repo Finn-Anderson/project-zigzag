@@ -11,7 +11,7 @@ import androidx.core.content.res.ResourcesCompat
 import java.util.*
 
 var count: Int = 0
-var scoreTally: Array<Boolean> = arrayOf()
+var scoreTally: MutableList<Boolean> = mutableListOf()
 
 private fun moveObstacle(ctx: Context, logL: View, logR: View, parent: ConstraintLayout, height: Int) {
     val handler = Handler(ctx.mainLooper)
@@ -49,7 +49,7 @@ fun createObstacle(ctx: Context, parent: ConstraintLayout, resources: Resources,
     parent.addView(logLeft)
     parent.addView(logRight)
 
-    scoreTally += false
+    scoreTally.add(false)
 
     moveObstacle(ctx, logLeft, logRight, parent, display.heightPixels)
 }
@@ -86,6 +86,8 @@ fun onCollision(circle: View, parent: ConstraintLayout): Boolean {
 
             if (circleRect.intersect(childRect)) {
                 state = true
+                scoreTally.clear()
+                count = 0
             }
         }
         i += 1

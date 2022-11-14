@@ -49,6 +49,8 @@ class Game : Fragment() {
 
         val gameLayout: ConstraintLayout = view.findViewById(R.id.gameLayout)
 
+        scoreModel.setScore(0)
+
         val screenW = resources.displayMetrics.widthPixels
         val screenY = resources.displayMetrics.heightPixels
 
@@ -63,6 +65,8 @@ class Game : Fragment() {
             }
         }
 
+        val handler = Handler(requireContext().mainLooper)
+
         binding.buttonGame.setOnTouchListener { v, event ->
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -70,7 +74,6 @@ class Game : Fragment() {
                     y = v.y - event.rawY
 
                     if (!gameStart) {
-                        val handler = Handler(requireContext().mainLooper)
                         handler.postDelayed(object: Runnable {
                             override fun run() {
                                 createObstacle(requireContext(), gameLayout, resources, resources.displayMetrics)
@@ -112,12 +115,12 @@ class Game : Fragment() {
             v?.onTouchEvent(event) ?: true
         }
 
-        val handler = Handler(requireContext().mainLooper)
         handler.postDelayed(object: Runnable {
             override fun run() {
                 checkGainPoints(view, yPos, scoreModel)
                 val state = onCollision(binding.buttonGame, gameLayout)
                 if (state) {
+                    handler.removeCallbacksAndMessages(null);
                     findNavController().navigate(R.id.action_Game_to_Over)
                 } else {
                     handler.postDelayed(this, 1000/60)
