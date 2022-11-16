@@ -6,6 +6,13 @@ import java.io.File
 
 object GameOverController {
 
+    /**
+     * Saves the highest score set on this device and creates a notification
+     *
+     * @property score string to save to score.txt if it is higher than the one already stored
+     * @property activity used to call notification() in MainActivity
+     * @property path file directory
+     */
     fun storeDeviceHighscore(score: String?, activity: FragmentActivity?, path: File) {
         score?.let {
             val file = File(path, "score.txt")

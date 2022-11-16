@@ -15,13 +15,11 @@ import com.uhi.mad.zigzag.databinding.GameOverBinding
  */
 class Game_Over : Fragment() {
 
+    // Initialise variables
     private var _binding: GameOverBinding? = null
+    private val binding get() = _binding!!
 
     private val scoreModel: ScoreViewModel by activityViewModels()
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
 
     private var scoreDatabase: DatabaseHelper? = null
     private var scores = ArrayList<Array<String>>()
@@ -38,11 +36,14 @@ class Game_Over : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Sets textview to score
         val scoreTxt = scoreModel.getScore().toString()
         binding.scoreTxt.text = scoreTxt
 
+        // Store new value and send notification if greater than value in file
         GameOverController.storeDeviceHighscore(scoreTxt, activity, requireContext().filesDir)
 
+        // Checks if username and score is set before submitting score
         binding.submitBtn.setOnClickListener {
             val username = binding.usernameInput.text.toString()
             val score = scoreModel.getScore()
@@ -54,9 +55,12 @@ class Game_Over : Fragment() {
                     scoreDatabase!!.open()
                     scores = scoreDatabase!!.getUser(username)
 
+                    // Get user's location before continuing
                     LocationGrabber().getLocation(requireContext(), requireActivity()) { country ->
 
+                        // Check if username already exists
                         if (scores.size > 0) {
+                            // Checks if the username has a greater score than the one just set
                             if (score > scores[0][1].toInt()) {
                                 scoreDatabase!!.updateScore(username, score, country)
 
@@ -78,6 +82,7 @@ class Game_Over : Fragment() {
             }
         }
 
+        // Navigation buttons to game and leaderboard respectively
         binding.playAgainBtn.setOnClickListener {
             findNavController().navigate(R.id.action_Over_to_Game)
         }
@@ -92,6 +97,7 @@ class Game_Over : Fragment() {
         _binding = null
     }
 
+    // Displays error message when the user submits a low score/invalid username
     private fun alert(message: String){
         val alert = AlertDialog.Builder(requireContext())
 

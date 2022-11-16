@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class DatabaseHelper (ctx: Context) {
+    // Initialise variables to use later
     private val DatabaseName = "leaderboardDatabase"
     private val DatabaseVersion = 1
     private val TableName = "leaderboard"
@@ -15,16 +16,26 @@ class DatabaseHelper (ctx: Context) {
             "score MEDIUMINT UNSIGNED NOT NULL, " +
             "country VARCHAR(50) NOT NULL);"
 
+    // Opens database
     @Throws(SQLException::class)
     fun open(): DatabaseHelper {
         mDb = mDbHelper.writableDatabase
         return this
     }
 
+    // Closes database
     fun close() {
         mDbHelper.close()
     }
 
+    /**
+     * Gets a specific username's details from the database
+     *
+     * @property username string to insert
+     * @property score integer to insert
+     * @property country string to insert
+     * @throws SQLException returns if an error has occurred
+     */
     @Throws(SQLException::class)
     fun insertScore(username: String, score: Int, country: String) {
         val args = ContentValues()
@@ -35,6 +46,14 @@ class DatabaseHelper (ctx: Context) {
         mDb?.insert(TableName, null, args)
     }
 
+    /**
+     * Gets a specific username's details from the database
+     *
+     * @property username string to search against username in database
+     * @property score integer to insert
+     * @property country string to insert
+     * @throws SQLException returns if an error has occurred
+     */
     @Throws(SQLException::class)
     fun updateScore(username: String, score: Int, country: String) {
         val args = ContentValues()
@@ -44,6 +63,13 @@ class DatabaseHelper (ctx: Context) {
         mDb?.update(TableName, args, "username = '$username'", null)
     }
 
+    /**
+     * Gets a specific username's details from the database
+     *
+     * @property username string to search for usernames in database
+     * @throws SQLException returns if an error has occurred
+     * @return returns results ArrayList
+     */
     @Throws(SQLException::class)
     fun getUser(username: String): ArrayList<Array<String>> {
         val results = ArrayList<Array<String>>()
@@ -57,6 +83,12 @@ class DatabaseHelper (ctx: Context) {
         return results
     }
 
+    /**
+     * Gets a specific username's details from the database
+     *
+     * @throws SQLException returns if an error has occurred
+     * @return returns results ArrayList of all rows in database
+     */
     @Throws(SQLException::class)
     fun getScores(): ArrayList<Array<String>> {
         val results = ArrayList<Array<String>>()
@@ -78,10 +110,12 @@ class DatabaseHelper (ctx: Context) {
     private inner class OpenHelper (context: Context) :
         SQLiteOpenHelper(context, DatabaseName, null, DatabaseVersion) {
 
+        // Create database
         override fun onCreate(db: SQLiteDatabase) {
             db.execSQL(DatabaseCreate)
         }
 
+        // Recreates database if updated
         override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
             db.execSQL("DROP TABLE IF EXISTS $TableName")
             onCreate(db)

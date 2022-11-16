@@ -17,6 +17,7 @@ import com.uhi.mad.zigzag.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    // Initialise variables
     private lateinit var binding: ActivityMainBinding
 
     private var channelId = "Highscore ID"
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Set variables and call functions
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -37,12 +39,14 @@ class MainActivity : AppCompatActivity() {
         checkNotifyVersion()
     }
 
+    // Checks location permissions
     private fun checkLocationPerms() {
         if (ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(ACCESS_COARSE_LOCATION), 1)
         }
     }
 
+    // Checks device version before setting notification channel
     private fun checkNotifyVersion() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
@@ -55,8 +59,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Displays notification at the top of the screen with a sound
+     *
+     * @property title string for the title
+     * @property msg string for the text
+     */
     fun notification(title: String, msg: String) {
-        println("HELLO")
         notifyUser.setAutoCancel(true)
             .setSmallIcon(R.drawable.rectangle)
             .setContentTitle(title)

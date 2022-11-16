@@ -9,6 +9,13 @@ import android.widget.TextView
 import androidx.core.view.setPadding
 
 class TableAdapter {
+    /**
+     * Populates leaderboard table rows
+     *
+     * @property table the table to append rows to
+     * @property scores ArrayList containing usernames, scores and locations
+     * @property ctx Context
+     */
     fun createRows(table: TableLayout, scores: ArrayList<Array<String>>, ctx: Context) {
         for (position in scores) {
             val row = TableRow(ctx)
@@ -39,8 +46,6 @@ class TableAdapter {
             row.addView(score)
             row.addView(country)
             table.addView(row)
-
-
         }
     }
 }

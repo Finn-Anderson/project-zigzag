@@ -31,6 +31,7 @@ class Home : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Navigation buttons to game and leaderboard respectively
         binding.playBtn.setOnClickListener {
             findNavController().navigate(R.id.action_Home_to_Game)
         }

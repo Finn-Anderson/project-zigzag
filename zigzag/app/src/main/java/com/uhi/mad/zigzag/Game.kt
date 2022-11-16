@@ -20,15 +20,16 @@ import java.util.*
  */
 class Game : Fragment() {
 
+    // Initialise variables
     private var _binding: GameBinding? = null
+    private val binding get() = _binding!!
 
     val scoreModel: ScoreViewModel by activityViewModels()
 
     private var gameStart: Boolean = false
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private var x: Float = 0.0f
+    private var y: Float = 0.0f
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,14 +40,14 @@ class Game : Fragment() {
         return binding.root
     }
 
-    private var x: Float = 0.0f
-    private var y: Float = 0.0f
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Makes the side go back a page do nothing. Ideal world would be removing them completely
         requireActivity().onBackPressedDispatcher.addCallback { }
 
+        // Initialise variables/values
         val gameLayout: ConstraintLayout = view.findViewById(R.id.gameLayout)
 
         scoreModel.setScore(0)
@@ -57,6 +58,9 @@ class Game : Fragment() {
         var time: Long = 3000
         var yPos = 0.0f
 
+        val handler = Handler(requireContext().mainLooper)
+
+        // Gets circle location when absolutely created
         gameLayout.viewTreeObserver.addOnGlobalLayoutListener {
             _binding?.let {
                 val location = IntArray(2)
@@ -65,14 +69,15 @@ class Game : Fragment() {
             }
         }
 
-        val handler = Handler(requireContext().mainLooper)
-
+        // Calls when circle touched
         binding.buttonGame.setOnTouchListener { v, event ->
             when (event?.action) {
+                // On first touch, get circle initial x and y to use later
                 MotionEvent.ACTION_DOWN -> {
                     x = v.x - event.rawX
                     y = v.y - event.rawY
 
+                    // If the game has not started, start log creation loop
                     if (!gameStart) {
                         handler.postDelayed(object: Runnable {
                             override fun run() {
@@ -87,8 +92,10 @@ class Game : Fragment() {
                         gameStart = true
                     }
 
+                    // Removes game instruction textview at the top-middle of the page
                     gameLayout.removeView(view.findViewById(R.id.gameInstructions))
                 }
+                // Sets circle's x and y location based on where user drags their finger
                 MotionEvent.ACTION_MOVE -> {
                     v.x = (event.rawX + x)
                     v.y = (event.rawY + y)
@@ -115,12 +122,14 @@ class Game : Fragment() {
             v?.onTouchEvent(event) ?: true
         }
 
+        // Timer calls 60x per second to check if user passed a log to gain points
+        // Also checks if user has collided with a log. If they have, they are taken to the game over screen
         handler.postDelayed(object: Runnable {
             override fun run() {
                 checkGainPoints(view, yPos, scoreModel)
                 val state = onCollision(binding.buttonGame, gameLayout)
                 if (state) {
-                    handler.removeCallbacksAndMessages(null);
+                    handler.removeCallbacksAndMessages(null)
                     findNavController().navigate(R.id.action_Game_to_Over)
                 } else {
                     handler.postDelayed(this, 1000/60)

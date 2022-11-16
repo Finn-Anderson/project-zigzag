@@ -13,11 +13,10 @@ import com.uhi.mad.zigzag.databinding.LeaderboardBinding
  */
 class Leaderboard : Fragment() {
 
+    // Initialise variables
     private var _binding: LeaderboardBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
     var scoreDatabase: DatabaseHelper? = null
     private var scores = ArrayList<Array<String>>()
 
@@ -28,6 +27,7 @@ class Leaderboard : Fragment() {
 
         _binding = LeaderboardBinding.inflate(inflater, container, false)
 
+        // Gets database scores and appends them to table
         scoreDatabase = DatabaseHelper(requireContext())
         scoreDatabase!!.open()
         scores = scoreDatabase!!.getScores()
@@ -40,6 +40,7 @@ class Leaderboard : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Navigation button to play game
         binding.playButton.setOnClickListener {
             findNavController().navigate(R.id.action_Leaderboard_to_Game)
         }
