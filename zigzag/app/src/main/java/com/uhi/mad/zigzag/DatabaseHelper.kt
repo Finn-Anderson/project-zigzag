@@ -29,7 +29,7 @@ class DatabaseHelper (ctx: Context) {
     }
 
     /**
-     * Gets a specific username's details from the database
+     * Insert a new user's score into the database
      *
      * @property username string to insert
      * @property score integer to insert
@@ -47,7 +47,7 @@ class DatabaseHelper (ctx: Context) {
     }
 
     /**
-     * Gets a specific username's details from the database
+     * Update a specific username's details from the database
      *
      * @property username string to search against username in database
      * @property score integer to insert
@@ -84,7 +84,7 @@ class DatabaseHelper (ctx: Context) {
     }
 
     /**
-     * Gets a specific username's details from the database
+     * Gets top 100 scores from database
      *
      * @throws SQLException returns if an error has occurred
      * @return returns results ArrayList of all rows in database
@@ -98,6 +98,27 @@ class DatabaseHelper (ctx: Context) {
         if (cursor!!.moveToFirst()) {
             do {
                 results.add(arrayOf(cursor.getString(0), cursor.getString(1), cursor.getString(2)))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return results
+    }
+
+    /**
+     * Gets top score from database
+     *
+     * @throws SQLException returns if an error has occurred
+     * @return returns results ArrayList of all rows in database
+     */
+    @Throws(SQLException::class)
+    fun getHighScore(): Int {
+        var results = 0
+
+        val cursor = mDb?.query(TableName, arrayOf("score"), null, null, null, null, "score desc", "1")
+
+        if (cursor!!.moveToFirst()) {
+            do {
+                results = cursor.getString(0).toInt()
             } while (cursor.moveToNext())
         }
         cursor.close()

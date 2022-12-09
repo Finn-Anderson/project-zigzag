@@ -40,8 +40,13 @@ class Game_Over : Fragment() {
         val scoreTxt = scoreModel.getScore().toString()
         binding.scoreTxt.text = scoreTxt
 
+        // Gets highest score on leaderboard
+        scoreDatabase = DatabaseHelper(requireContext())
+        scoreDatabase!!.open()
+        var highScore = scoreDatabase!!.getHighScore()
+
         // Store new value and send notification if greater than value in file
-        GameOverController.storeDeviceHighscore(scoreTxt, activity, requireContext().filesDir)
+        GameOverController.storeDeviceHighscore(scoreTxt, highScore, activity, requireContext().filesDir)
 
         // Checks if username and score is set before submitting score
         binding.submitBtn.setOnClickListener {
@@ -50,14 +55,10 @@ class Game_Over : Fragment() {
 
             if (score != null) {
                 if (username.isNotEmpty()) {
-
-                    scoreDatabase = DatabaseHelper(requireContext())
-                    scoreDatabase!!.open()
                     scores = scoreDatabase!!.getUser(username)
 
                     // Get user's location before continuing
                     LocationGrabber().getLocation(requireContext(), requireActivity()) { country ->
-
                         // Check if username already exists
                         if (scores.size > 0) {
                             // Checks if the username has a greater score than the one just set

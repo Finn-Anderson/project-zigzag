@@ -13,7 +13,7 @@ object GameOverController {
      * @property activity used to call notification() in MainActivity
      * @property path file directory
      */
-    fun storeDeviceHighscore(score: String?, activity: FragmentActivity?, path: File) {
+    fun storeDeviceHighscore(score: String?, leaderboardScore: Int, activity: FragmentActivity?, path: File) {
         score?.let {
             val file = File(path, "score.txt")
 
@@ -25,7 +25,11 @@ object GameOverController {
 
             if (highestScore == "null" || score.toInt() > highestScore.toInt()) {
                 file.writeText(score)
-                (activity as MainActivity).notification("High Score!", "You have achieved a new high score!")
+                (activity as MainActivity).notification("High Score!", "You have achieved a new high score on this device!")
+            }
+
+            if (score.toInt() > leaderboardScore) {
+                (activity as MainActivity).notification("High Score!", "You have achieved a new high score on the leaderboard!")
             }
         }
     }
